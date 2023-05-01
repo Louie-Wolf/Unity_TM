@@ -1,3 +1,2 @@
 # Unity_TM
-A universal turing machine simulated with Unity.
-Unity Version 2021.3.11f1
+A universal turing machine simulated with Unity Version 2021.3.11f1
