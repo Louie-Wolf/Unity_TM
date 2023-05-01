@@ -11,9 +11,9 @@ public class State
         this.StateNr = stateNr;
     }
 
-    public void AddTransition(string input, Transition transition)
+    public void AddTransition(string read, Transition transition)
     {
-        transitions.Add(input, transition);
+        transitions.Add(read, transition);
     }
 
     public Transition GetNextMove(string input)

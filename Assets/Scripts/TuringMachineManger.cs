@@ -25,19 +25,26 @@ public class TuringMachineManger : MonoBehaviour
     private Button calculateFastButton;
 
     [SerializeField]
-    private InputField inputField;
+    private TMP_InputField inputField;
 
     [SerializeField]
     private Material accepted, declined;
 
     [SerializeField]
     private MeshRenderer tmHeadRenderer;
+
+    [SerializeField]
+    private TextMeshPro stateText;
     #endregion
 
     #region Turing Machine Vars
-    private List<State> states;
+    private Dictionary<int, State> states;
     private State currentState;
     private bool isTMInitialized = false;
+    public static int CurrentSlotIndex { private set; get; } = 14;
+    private Vector3 currentTargetPosition;
+    [SerializeField]
+    private float waitTime;
     #endregion
 
     #region Unity Callables
@@ -51,19 +58,29 @@ public class TuringMachineManger : MonoBehaviour
         //Initialize Graphics
         tmHeadRenderer.material = declined;
 
+        //Initialize Position
+        currentTargetPosition = tmHead.position;
+
         //Initialize States
-        states = new List<State>();
-        states.Add(new State(1)); //x1 start state
-        states.Add(new State(2)); //x2 accepting state
-        states.Add(new State(3)); //x3 state
-        states.Add(new State(4)); //x4 state
-        states.Add(new State(5)); //x5 state
-        states.Add(new State(6)); //x6 state
-        states.Add(new State(7)); //x7 state
-        states.Add(new State(8)); //x8 state
+        states = new Dictionary<int, State>();
+        states.Add(1,new State(1)); //x1 start state
+        states.Add(2,new State(2)); //x2 accepting state
+        states.Add(3,new State(3)); //x3 state
+        states.Add(4,new State(4)); //x4 state
+        states.Add(5,new State(5)); //x5 state
+        states.Add(6,new State(6)); //x6 state
+        states.Add(7,new State(7)); //x7 state
+        states.Add(8,new State(8)); //x8 state
 
-        currentState = states[0]; //x1 as start state
+        states.TryGetValue(1, out currentState);//x1 as start stat
+    }
 
+    private void Update()
+    {
+        if (Vector3.Distance(tmHead.position,currentTargetPosition) > 0.05f)
+        {
+            tmHead.position = Vector3.Lerp(tmHead.position, currentTargetPosition, Time.deltaTime * 2);
+        }
     }
 
     private void OnDestroy()
@@ -97,6 +114,17 @@ public class TuringMachineManger : MonoBehaviour
         {
             if (input.Substring(i,3) == "111")
             {
+                //checks if transition is defined
+                if (stateFrom == -1 || read == string.Empty || stateTo == -1 || write == string.Empty || isDirDefiend == false)
+                {
+                    Debug.LogError("Cant initialize! At least one transition var wasn't defined correctly!");
+                    return;
+                }
+
+                //return finished transition if defined
+                states[stateFrom].AddTransition(read, new Transition(stateTo, write, isRigh));
+
+
                 //gives the rest input to the slot manager
                 slotManager.EnterInputMiddle(input.Substring(i+3)); 
                 //defines TM as initialized for calculation
@@ -165,7 +193,7 @@ public class TuringMachineManger : MonoBehaviour
                 else if (write == string.Empty)
                 {
                     int zeros = CountZeros(input.Substring(i + 1));
-                    if (!slotManager.XnPairs.TryGetValue(zeros, out read))
+                    if (!slotManager.XnPairs.TryGetValue(zeros, out write))
                     {
                         Debug.LogError("Write symbol is not defined!");
                         return;
@@ -176,12 +204,12 @@ public class TuringMachineManger : MonoBehaviour
                 else if (isDirDefiend == false)
                 {
                     int zeros = CountZeros(input.Substring(i + 1));
-                    if (zeros == 0)
+                    if (zeros == 1)
                     {
                         isRigh = false;
                         isDirDefiend = true;
                     }
-                    else if (zeros == 1)
+                    else if (zeros == 2)
                     {
                         isRigh = true;
                         isDirDefiend = true;
@@ -223,11 +251,148 @@ public class TuringMachineManger : MonoBehaviour
 
     private void CalculateSBS()
     {
+        if (!isTMInitialized)
+        {
+            Debug.LogWarning("TM not initialized");
+            return;
+        }
 
+        StartCoroutine(StepByStep(waitTime));
     }
 
     private void CalculateFast()
     {
+        if (!isTMInitialized)
+        {
+            Debug.LogWarning("TM not initialized");
+            return;
+        }
 
+        string readTapeSymbol;
+        Transition transitionData;
+        while (true)
+        {
+            //Read from tape
+            readTapeSymbol = slotManager.Read(CurrentSlotIndex);
+
+            //Try to find next state
+            transitionData = currentState.GetNextMove(readTapeSymbol);
+            int nextStateIndex = transitionData.State;
+
+            //evaluate if it is the last move
+            if (nextStateIndex == -1)
+            {
+                Debug.Log("StateMachine Ended!");
+                return;
+            }
+            //decide next state if not last
+            State nextState;
+            if (!states.TryGetValue(nextStateIndex, out nextState))
+            {
+                Debug.LogError("State does not exist and is not final state!");
+                return;
+            }
+            currentState = nextState;
+
+            //evaluate write tapeSymbol
+            string writeTapeSymbol = transitionData.Write;
+            if (writeTapeSymbol == string.Empty)
+            {
+                Debug.Log("Write string was empty!");
+                return;
+            }
+            slotManager.Write(CurrentSlotIndex, writeTapeSymbol);
+
+            //evaluate direction to move
+            bool movingRight = transitionData.MoveRight;
+            if (movingRight)
+            {
+                CurrentSlotIndex++;
+                currentTargetPosition += new Vector3(-1f, 0, 0);
+            }
+            else
+            {
+                tmHead.Translate(1f, 0, 0);
+                currentTargetPosition += new Vector3(1f, 0, 0);
+            }
+
+            //Changes Color
+            if (currentState.StateNr == 2)
+            {
+                tmHeadRenderer.material = accepted;
+                stateText.text = "q" + currentState.StateNr;
+            }
+            else
+            {
+                tmHeadRenderer.material = declined;
+                stateText.text = "q" + currentState.StateNr;
+            }
+        }
+    }
+
+    private IEnumerator StepByStep(float waitTime)
+    {
+        string readTapeSymbol;
+        Transition transitionData;
+        while (true)
+        {
+            //Read from tape
+            readTapeSymbol = slotManager.Read(CurrentSlotIndex);
+
+            //Try to find next state
+            transitionData = currentState.GetNextMove(readTapeSymbol);
+            int nextStateIndex = transitionData.State;
+
+            //evaluate if it is the last move
+            if (nextStateIndex == -1)
+            {
+                Debug.Log("StateMachine Ended!");
+                break;
+            }
+            //decide next state if not last
+            State nextState;
+            if (!states.TryGetValue(nextStateIndex, out nextState))
+            {
+                Debug.LogError("State does not exist and is not final state!");
+                break;
+            }
+            currentState = nextState;
+
+            //evaluate write tapeSymbol
+            string writeTapeSymbol = transitionData.Write;
+            if (writeTapeSymbol == string.Empty)
+            {
+                Debug.Log("Write string was empty!");
+                break;
+            }
+            slotManager.Write(CurrentSlotIndex, writeTapeSymbol);
+
+            //evaluate direction to move
+            bool movingRight = transitionData.MoveRight;
+            if (movingRight)
+            {
+                CurrentSlotIndex++;
+                currentTargetPosition += new Vector3(-1f, 0, 0);
+            }
+            else
+            {
+                CurrentSlotIndex--;
+                currentTargetPosition += new Vector3(1f, 0, 0);
+
+            }
+            //Changes Color
+            if (currentState.StateNr == 2)
+            {
+                tmHeadRenderer.material = accepted;
+                stateText.text = "q" + currentState.StateNr;
+            }
+            else
+            {
+                tmHeadRenderer.material = declined;
+                stateText.text = "q" + currentState.StateNr;
+            }
+
+            yield return new WaitForSecondsRealtime(waitTime);
+        }
     }
 }
