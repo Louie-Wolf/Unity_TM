@@ -1,5 +1,6 @@
 # Unity_TM
 A universal turing machine simulated with Unity Version 2021.3.11f1
+![TM Example](Screenshot_TM.png)
 
 ## Universal Turing Machine Code:
 ### Symbols - separated with 1's (e.g. ...1010001001...)
@@ -30,4 +31,3 @@ DR : Right (00)
 (q2, x3) -> (q3, x1, R)  
 Note: TM has to start with 1  
 <br>
-![TM Example](Screenshot_TM.png)
