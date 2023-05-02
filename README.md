@@ -24,9 +24,10 @@ DR : Right (00)
 ### Transition Format
 (qn, xm) -> (qj, xk, Dl)  
 0^n 1 0^m 1 0^j 1 0^k 1 0^l  
-(e.g)  
 <br>
+(e.g)  
 1 001000100010100 <strong>11</strong> next transition  
+(q2, x3) -> (q3, x1, R)  
 Note: TM has to start with 1  
 <br>
 ![TM Example](Screenshot_TM.png)
