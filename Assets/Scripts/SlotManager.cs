@@ -5,6 +5,7 @@ using TMPro;
 public class SlotManager : MonoBehaviour
 {
     #region Settings and References
+    [Header("Settings and References")]
     [SerializeField]
     private TextMeshPro[] slots;
 

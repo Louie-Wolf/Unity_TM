@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class TuringMachineManger : MonoBehaviour
 {
     #region Object References
+    [Header("References")]
     [SerializeField]
     private SlotManager slotManager;
 
@@ -15,6 +16,8 @@ public class TuringMachineManger : MonoBehaviour
     #endregion
 
     #region User Interface
+    [Space(2)]
+    [Header("UI")]
     [SerializeField]
     private Button loadTMButton;
 
@@ -37,14 +40,24 @@ public class TuringMachineManger : MonoBehaviour
     private TextMeshPro stateText;
     #endregion
 
+    #region Settings
+    [Space(2)]
+    [Header("Settings")]
+    [SerializeField]
+    private float waitTime;
+    [Header("States")]
+    [SerializeField]
+    private int statesAmount;
+
     #region Turing Machine Vars
     private Dictionary<int, State> states;
     private State currentState;
     private bool isTMInitialized = false;
     public static int CurrentSlotIndex { private set; get; } = 14;
     private Vector3 currentTargetPosition;
-    [SerializeField]
-    private float waitTime;
+    #endregion
+
+    
     #endregion
 
     #region Unity Callables
@@ -90,7 +103,8 @@ public class TuringMachineManger : MonoBehaviour
         calculateFastButton.onClick.RemoveListener(CalculateFast);
     }
     #endregion
-    
+
+    #region Method Behaviour
     private void LoadTM()
     {
         string input = inputField.text;
@@ -395,4 +409,5 @@ public class TuringMachineManger : MonoBehaviour
             yield return new WaitForSecondsRealtime(waitTime);
         }
     }
+    #endregion
 }
