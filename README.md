@@ -16,8 +16,6 @@ qn : n normal states (0^n)
 
 ### Input - separated with 111 at the end of TM (e.g ...1110100101...)
 Input (Symbols) to put on the tape.  
-(eg.)  
-111001000101...
 
 ### Direction
 DL : Left (0)  
