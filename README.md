@@ -12,13 +12,18 @@ x3 : any symbol (000)
 q1 : start state (0)  
 q2 : accepted state (00)  
 q3... : normal state (000)  
-qn : n normal states (0*n)  
+qn : n normal states (0^n)  
 
 ### Input - seperated with 111 at the end of TM (e.g ...1110100101...)
 Input (Symbols) to put on the tape.  
 
 ### Direction
-L : Left (0)  
-R : Right (00)  
+DL : Left (0)  
+DR : Right (00)  
+
+### States Format
+(qn, xm) -> (qj, xk, Dl)  
+0^n 1 0^m 1 0^j 1 0^k 1 0^l  
+(e.g 0010001000101001)  
 <br>
 ![TM Example](Screenshot_TM.png)
