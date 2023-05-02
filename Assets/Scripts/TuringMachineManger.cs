@@ -45,7 +45,6 @@ public class TuringMachineManger : MonoBehaviour
     [Header("Settings")]
     [SerializeField]
     private float waitTime;
-    [Header("States")]
     [SerializeField]
     private int statesAmount;
 
