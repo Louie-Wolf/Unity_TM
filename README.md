@@ -20,3 +20,4 @@ Input (Symbols) to put on the tape.
 ### Direction
 L : Left (0)  
 R : Right (00)  
+![TM Example](Screenshot_TM.png)
