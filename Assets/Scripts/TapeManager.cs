@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class SlotManager : MonoBehaviour
+public class TapeManager : MonoBehaviour
 {
     #region Settings and References
     [Header("Settings and References")]
@@ -16,7 +16,7 @@ public class SlotManager : MonoBehaviour
     private int tapeLength;
     #endregion
 
-    public Dictionary<int, string> XnPairs { private set; get;}
+    public Dictionary<int, string> XnPairs { private set; get; }
 
     private void Awake()
     {
@@ -35,7 +35,7 @@ public class SlotManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Enters the tape input from the middle of the band.
+    /// Enters the tape input in the middle of the tape.
     /// </summary>
     /// <param name="input"> is limited to the tapesize/2</param>
     public void EnterInputMiddle(string input)
@@ -75,7 +75,6 @@ public class SlotManager : MonoBehaviour
                 {
                     Debug.LogError("Symbol was not defined! Cant convert!");
                 }
-                
                 convertedSymbols.Add(symbol);
                 zeroAmount = 0;
             }

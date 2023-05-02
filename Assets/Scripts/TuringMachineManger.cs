@@ -9,10 +9,13 @@ public class TuringMachineManger : MonoBehaviour
     #region Object References
     [Header("References")]
     [SerializeField]
-    private SlotManager slotManager;
+    private TapeManager slotManager;
 
     [SerializeField]
     private Transform tmHead;
+
+    [SerializeField]
+    private Animation tmhHeadAnim;
     #endregion
 
     #region User Interface
@@ -379,6 +382,7 @@ public class TuringMachineManger : MonoBehaviour
                 break;
             }
             slotManager.Write(CurrentSlotIndex, writeTapeSymbol);
+            tmhHeadAnim.Play();
 
             //evaluate direction to move
             bool movingRight = transitionData.MoveRight;

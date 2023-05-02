@@ -6742,6 +6742,7 @@ MonoBehaviour:
   tmHeadRenderer: {fileID: 1943707703}
   stateText: {fileID: 1881728461}
   waitTime: 3
+  statesAmount: 0
 --- !u!4 &625564266
 Transform:
   m_ObjectHideFlags: 0
