@@ -27,6 +27,7 @@ DR : Right (00)
 (qn, xm) -> (qj, xk, Dl)  
 0^n 1 0^m 1 0^j 1 0^k 1 0^l  
 (e.g)  
+<br>
 1 001000100010100 <strong>11</strong> next transition  
 Note: TM has to start with 1  
 <br>
