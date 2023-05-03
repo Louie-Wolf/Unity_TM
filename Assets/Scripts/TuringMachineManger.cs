@@ -46,7 +46,7 @@ public class TuringMachineManger : MonoBehaviour
     #region Settings
     [Space(2)]
     [Header("Settings")]
-    [Range(0f,5f)]
+    [Range(1f,5f)]
     [SerializeField]
     private float waitTime;
     [SerializeField]
@@ -301,14 +301,14 @@ public class TuringMachineManger : MonoBehaviour
             if (nextStateIndex == -1)
             {
                 Debug.Log("StateMachine Ended!");
-                return;
+                break;
             }
             //decide next state if not last
             State nextState;
             if (!states.TryGetValue(nextStateIndex, out nextState))
             {
                 Debug.LogError("State does not exist and is not final state!");
-                return;
+                break;
             }
             currentState = nextState;
 
@@ -317,7 +317,7 @@ public class TuringMachineManger : MonoBehaviour
             if (writeTapeSymbol == string.Empty)
             {
                 Debug.Log("Write string was empty!");
-                return;
+                break;
             }
             slotManager.Write(CurrentSlotIndex, writeTapeSymbol);
 
@@ -330,10 +330,10 @@ public class TuringMachineManger : MonoBehaviour
             }
             else
             {
-                tmHead.Translate(1f, 0, 0);
+                CurrentSlotIndex--;
                 currentTargetPosition += new Vector3(1f, 0, 0);
-            }
 
+            }
             //Changes Color
             if (currentState.StateNr == 2)
             {
