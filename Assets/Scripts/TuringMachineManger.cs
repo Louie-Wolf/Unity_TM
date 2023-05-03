@@ -46,6 +46,7 @@ public class TuringMachineManger : MonoBehaviour
     #region Settings
     [Space(2)]
     [Header("Settings")]
+    [Range(0f,5f)]
     [SerializeField]
     private float waitTime;
     [SerializeField]
@@ -77,30 +78,9 @@ public class TuringMachineManger : MonoBehaviour
         currentTargetPosition = tmHead.position;
 
         //Initialize States
-        states = new Dictionary<int, State>();
-        states.Add(1,new State(1)); //x1 start state
-        states.Add(2,new State(2)); //x2 accepting state
-        states.Add(3,new State(3)); //x3 state
-        states.Add(4,new State(4)); //x4 state
-        states.Add(5,new State(5)); //x5 state
-        states.Add(6,new State(6)); //x6 state
-        states.Add(7,new State(7)); //x7 state
-        states.Add(8,new State(8)); //x8 state
-        states.Add(9, new State(9)); //x8 state
-        states.Add(10, new State(10)); //x8 state
-        states.Add(11, new State(11)); //x8 state
-        states.Add(12, new State(12)); //x8 state
-        states.Add(13, new State(13)); //x8 state
-        states.Add(14, new State(14)); //x8 state
-        states.Add(15, new State(15)); //x8 state
-        states.Add(16, new State(16)); //x8 state
-        states.Add(17, new State(17)); //x8 state
-        states.Add(18, new State(18)); //x8 state
-        states.Add(19, new State(19)); //x8 state
-        states.Add(20, new State(20)); //x8 state
-        states.Add(21, new State(21)); //x8 state
+        InitEmptyStates();
 
-        states.TryGetValue(1, out currentState);//x1 as start stat
+        states.TryGetValue(1, out currentState); //x1 as start stat
     }
 
     private void Update()
@@ -120,6 +100,15 @@ public class TuringMachineManger : MonoBehaviour
     #endregion
 
     #region Method Behaviour
+    private void InitEmptyStates()
+    {
+        states = new Dictionary<int, State>();
+        for (int i = 0; i < statesAmount; i++)
+        {
+            states.Add(i + 1, new State(i + 1));
+        }
+    }
+
     private void LoadTM()
     {
         string input = inputField.text;
