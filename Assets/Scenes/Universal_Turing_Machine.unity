@@ -1781,6 +1781,7 @@ GameObject:
   - component: {fileID: 133139305}
   - component: {fileID: 133139304}
   - component: {fileID: 133139303}
+  - component: {fileID: 133139306}
   m_Layer: 0
   m_Name: Pointer
   m_TagString: Untagged
@@ -1796,8 +1797,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133139301}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.5, z: 0}
-  m_LocalScale: {x: 0.2, y: 2, z: 0.2}
+  m_LocalPosition: {x: 0, y: -0.95, z: 0}
+  m_LocalScale: {x: 0.2, y: 2.68, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 905233101}
@@ -1867,6 +1868,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133139301}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!111 &133139306
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133139301}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: bf74da29d38a68c458f8ccc57bd48c39, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: bf74da29d38a68c458f8ccc57bd48c39, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &150454672
 GameObject:
   m_ObjectHideFlags: 0
@@ -6733,6 +6750,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotManager: {fileID: 1025655716}
   tmHead: {fileID: 1430448841}
+  tmhHeadAnim: {fileID: 133139306}
   loadTMButton: {fileID: 1550465116}
   calculateSBSButton: {fileID: 531036725}
   calculateFastButton: {fileID: 801178763}
@@ -12237,6 +12255,11 @@ MonoBehaviour:
   - 0
   - 1
   - _
+  - +
+  - '*'
+  - X
+  - I
+  - C
   tapeLength: 30
 --- !u!4 &1025655717
 Transform:
