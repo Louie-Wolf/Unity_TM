@@ -51,16 +51,15 @@ public class TuringMachineManger : MonoBehaviour
     private float waitTime;
     [SerializeField]
     private int statesAmount;
+    #endregion
 
     #region Turing Machine Vars
     private Dictionary<int, State> states;
     private State currentState;
+    private State acceptedState;
     private bool isTMInitialized = false;
     public static int CurrentSlotIndex { private set; get; } = 14;
     private Vector3 currentTargetPosition;
-    #endregion
-
-    
     #endregion
 
     #region Unity Callables
@@ -80,7 +79,8 @@ public class TuringMachineManger : MonoBehaviour
         //Initialize States
         InitEmptyStates();
 
-        states.TryGetValue(1, out currentState); //x1 as start stat
+        states.TryGetValue(1, out currentState); //x1 as start state
+        states.TryGetValue(2, out acceptedState); //x2 as accepted state
     }
 
     private void Update()
@@ -125,7 +125,7 @@ public class TuringMachineManger : MonoBehaviour
         int stateTo = -1; // qj
         string write = string.Empty; //xj
         bool isRigh = false; //dk
-        bool isDirDefiend = false; // helper var, cant tell otherwise
+        bool isDirDefined = false; // helper var, cant tell otherwise
 
 
         for (int i = 0; i < input.Length; i++)
@@ -133,15 +133,10 @@ public class TuringMachineManger : MonoBehaviour
             if (input.Substring(i,3) == "111")
             {
                 //checks if transition is defined
-                if (stateFrom == -1 || read == string.Empty || stateTo == -1 || write == string.Empty || isDirDefiend == false)
-                {
-                    Debug.LogError("Cant initialize! At least one transition var wasn't defined correctly!");
-                    return;
-                }
+                if (!CheckTransitionDefined(stateFrom, read, stateTo, write, isDirDefined)) return;
 
                 //return finished transition if defined
                 states[stateFrom].AddTransition(read, new Transition(stateTo, write, isRigh));
-
 
                 //gives the rest input to the slot manager
                 slotManager.EnterInputMiddle(input.Substring(i+3)); 
@@ -152,11 +147,7 @@ public class TuringMachineManger : MonoBehaviour
             else if (input.Substring(i, 2) == "11") //sets calculated transition to state
             {
                 //checks if transition is defined
-                if (stateFrom == -1 || read == string.Empty || stateTo == -1 || write == string.Empty || isDirDefiend == false)
-                {
-                    Debug.LogError("Cant initialize! At least one transition var wasn't defined correctly!");
-                    return;
-                }
+                if (!CheckTransitionDefined(stateFrom, read, stateTo, write, isDirDefined)) return;
 
                 //return finished transition if defined
                 states[stateFrom].AddTransition(read, new Transition(stateTo, write, isRigh));
@@ -167,7 +158,7 @@ public class TuringMachineManger : MonoBehaviour
                 stateTo = -1; // qj
                 write = string.Empty; //xj
                 isRigh = false; //dk
-                isDirDefiend = false;
+                isDirDefined = false;
             }
             else if (input[i] == '1') //reads next transition var
             {
@@ -219,18 +210,18 @@ public class TuringMachineManger : MonoBehaviour
 
                     i += zeros;
                 }
-                else if (isDirDefiend == false)
+                else if (isDirDefined == false)
                 {
                     int zeros = CountZeros(input.Substring(i + 1));
                     if (zeros == 1)
                     {
                         isRigh = false;
-                        isDirDefiend = true;
+                        isDirDefined = true;
                     }
                     else if (zeros == 2)
                     {
                         isRigh = true;
-                        isDirDefiend = true;
+                        isDirDefined = true;
                     }
                     else
                     {
@@ -244,6 +235,17 @@ public class TuringMachineManger : MonoBehaviour
         }
     }
 
+    private bool CheckTransitionDefined(int stateFrom, string read, int stateTo, string write, bool isDirDefined)
+    {
+        //checks if transition is defined
+        if (stateFrom == -1 || read == string.Empty || stateTo == -1 || write == string.Empty || isDirDefined == false)
+        {
+            Debug.LogErrorFormat($"Cant initialize! At least one transition parameter wasn't defined correctly!\n stateFrom: {0}\n read: {1}\n stateTo: {2}\n write: {3}\n isDirDefined: {4}\n", stateFrom, read, stateTo, write, isDirDefined);
+            return false;
+        }
+        return true;
+    }
+
     private int CountZeros(string input)
     {
         if (input.Length < 1)
@@ -252,15 +254,19 @@ public class TuringMachineManger : MonoBehaviour
             return -1;
         }
 
-        if (input[0] == '1')
+        if (input[0] != '0')
         {
-            Debug.LogError("Input starts with 1! Can't count zeros!");
+            Debug.LogError("Input starts with invalid char! Can't count zeros!");
             return -1;
         }
 
         int zeros = 0;
         while (input[zeros] != '1')
         {
+            if (input[zeros] != '0')
+            {
+                Debug.LogErrorFormat($"Illegal char found in TM Code: {0}\n Must be 0 or 1", input[zeros]);
+            }
             zeros++;
         }
 
@@ -288,6 +294,7 @@ public class TuringMachineManger : MonoBehaviour
 
         string readTapeSymbol;
         Transition transitionData;
+
         while (true)
         {
             //Read from tape
@@ -303,6 +310,7 @@ public class TuringMachineManger : MonoBehaviour
                 Debug.Log("StateMachine Ended!");
                 break;
             }
+
             //decide next state if not last
             State nextState;
             if (!states.TryGetValue(nextStateIndex, out nextState))
@@ -321,30 +329,9 @@ public class TuringMachineManger : MonoBehaviour
             }
             slotManager.Write(CurrentSlotIndex, writeTapeSymbol);
 
-            //evaluate direction to move
-            bool movingRight = transitionData.MoveRight;
-            if (movingRight)
-            {
-                CurrentSlotIndex++;
-                currentTargetPosition += new Vector3(-1f, 0, 0);
-            }
-            else
-            {
-                CurrentSlotIndex--;
-                currentTargetPosition += new Vector3(1f, 0, 0);
+            UpdatePosition(transitionData.MoveRight);
 
-            }
-            //Changes Color
-            if (currentState.StateNr == 2)
-            {
-                tmHeadRenderer.material = accepted;
-                stateText.text = "q" + currentState.StateNr;
-            }
-            else
-            {
-                tmHeadRenderer.material = declined;
-                stateText.text = "q" + currentState.StateNr;
-            }
+            UpdateVisuals();
         }
     }
 
@@ -352,6 +339,7 @@ public class TuringMachineManger : MonoBehaviour
     {
         string readTapeSymbol;
         Transition transitionData;
+
         while (true)
         {
             //Read from tape
@@ -367,6 +355,7 @@ public class TuringMachineManger : MonoBehaviour
                 Debug.Log("StateMachine Ended!");
                 break;
             }
+
             //decide next state if not last
             State nextState;
             if (!states.TryGetValue(nextStateIndex, out nextState))
@@ -384,35 +373,41 @@ public class TuringMachineManger : MonoBehaviour
                 break;
             }
             slotManager.Write(CurrentSlotIndex, writeTapeSymbol);
+            
             tmhHeadAnim.Play();
 
-            //evaluate direction to move
-            bool movingRight = transitionData.MoveRight;
-            if (movingRight)
-            {
-                CurrentSlotIndex++;
-                currentTargetPosition += new Vector3(-1f, 0, 0);
-            }
-            else
-            {
-                CurrentSlotIndex--;
-                currentTargetPosition += new Vector3(1f, 0, 0);
+            UpdatePosition(transitionData.MoveRight);
 
-            }
-            //Changes Color
-            if (currentState.StateNr == 2)
-            {
-                tmHeadRenderer.material = accepted;
-                stateText.text = "q" + currentState.StateNr;
-            }
-            else
-            {
-                tmHeadRenderer.material = declined;
-                stateText.text = "q" + currentState.StateNr;
-            }
+            UpdateVisuals();
 
             yield return new WaitForSecondsRealtime(waitTime);
         }
+    }
+
+    private void UpdatePosition(bool movingRight)
+    {
+        if (movingRight)
+        {
+            CurrentSlotIndex++;
+            currentTargetPosition += new Vector3(-1f, 0, 0);
+            return;
+        }
+
+        CurrentSlotIndex--;
+        currentTargetPosition += new Vector3(1f, 0, 0);
+    }
+
+    private void UpdateVisuals()
+    {
+        if (currentState.StateNr == acceptedState.StateNr)
+        {
+            tmHeadRenderer.material = accepted;
+            stateText.text = "q" + currentState.StateNr;
+            return;
+        }
+
+        tmHeadRenderer.material = declined;
+        stateText.text = "q" + currentState.StateNr;
     }
     #endregion
 }

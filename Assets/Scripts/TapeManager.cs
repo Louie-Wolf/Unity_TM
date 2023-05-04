@@ -41,7 +41,7 @@ public class TapeManager : MonoBehaviour
     public void EnterInputMiddle(string input)
     {
         int currentSlotIndex = TuringMachineManger.CurrentSlotIndex;
-        Debug.LogFormat("Starting Index on TapeManger is: {0}", currentSlotIndex);
+        Debug.LogFormat($"Starting Index on TapeManger is: {0}", currentSlotIndex);
 
         string[] symbols = ConvertSymbols(input);
         
@@ -59,7 +59,7 @@ public class TapeManager : MonoBehaviour
 
     private string[] ConvertSymbols(string input)
     {
-        List<string> convertedSymbols = new List<string>();
+        List<string> convertedSymbols = new ();
 
         int zeroAmount = 0;
         for (int i = 0; i < input.Length; i++)
