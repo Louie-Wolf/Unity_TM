@@ -58,7 +58,7 @@ public class TuringMachineManger : MonoBehaviour
     private State currentState;
     private State acceptedState;
     private bool isTMInitialized = false;
-    public static int CurrentSlotIndex { private set; get; } = 14;
+    public int CurrentSlotIndex { private set; get; } = 14;
     private Vector3 currentTargetPosition;
     #endregion
 

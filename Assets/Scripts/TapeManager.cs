@@ -7,6 +7,9 @@ public class TapeManager : MonoBehaviour
     #region Settings and References
     [Header("Settings and References")]
     [SerializeField]
+    private TuringMachineManger tmManager;
+
+    [SerializeField]
     private TextMeshPro[] slots;
 
     [SerializeField]
@@ -37,17 +40,17 @@ public class TapeManager : MonoBehaviour
     /// <summary>
     /// Enters the tape input in the middle of the tape.
     /// </summary>
-    /// <param name="input"> is limited to the tapesize/2</param>
+    /// <param name="input"> is limited to the tapesize</param>
     public void EnterInputMiddle(string input)
     {
-        int currentSlotIndex = TuringMachineManger.CurrentSlotIndex;
+        int currentSlotIndex = tmManager.CurrentSlotIndex;
         Debug.LogFormat($"Starting Index on TapeManger is: {0}", currentSlotIndex);
 
         string[] symbols = ConvertSymbols(input);
         
         if (symbols.Length > tapeLength - currentSlotIndex)
         {
-            Debug.LogError("Length exceeded 15! Use other method for longer input");
+            Debug.LogError("Length exceeded the maximum space! Use other method for longer input");
         }
         int index = currentSlotIndex;
         foreach (string symbol in symbols)
