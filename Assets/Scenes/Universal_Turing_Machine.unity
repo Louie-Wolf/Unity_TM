@@ -6862,8 +6862,9 @@ MonoBehaviour:
   declined: {fileID: 2100000, guid: 261392aad73849642ae65212e2b53c3b, type: 2}
   tmHeadRenderer: {fileID: 1943707703}
   stateText: {fileID: 1881728461}
-  waitTime: 0.32
+  waitTime: 1.34
   statesAmount: 21
+  tmHeadSpeed: 5
 --- !u!4 &625564266
 Transform:
   m_ObjectHideFlags: 0

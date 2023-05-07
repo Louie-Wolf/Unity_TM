@@ -51,6 +51,8 @@ public class TuringMachineManger : MonoBehaviour
     private float waitTime;
     [SerializeField]
     private int statesAmount;
+    [SerializeField]
+    private float tmHeadSpeed = 2;
     #endregion
 
     #region Turing Machine Vars
@@ -87,7 +89,7 @@ public class TuringMachineManger : MonoBehaviour
     {
         if (Vector3.Distance(tmHead.position,currentTargetPosition) > 0.05f)
         {
-            tmHead.position = Vector3.Lerp(tmHead.position, currentTargetPosition, Time.deltaTime * 2);
+            tmHead.position = Vector3.Lerp(tmHead.position, currentTargetPosition, Time.deltaTime * tmHeadSpeed);
         }
     }
 
