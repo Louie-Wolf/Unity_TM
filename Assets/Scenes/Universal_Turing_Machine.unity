@@ -6864,7 +6864,7 @@ MonoBehaviour:
   stateText: {fileID: 1881728461}
   waitTime: 1.34
   statesAmount: 21
-  tmHeadSpeed: 5
+  tmHeadSpeed: 3
 --- !u!4 &625564266
 Transform:
   m_ObjectHideFlags: 0
