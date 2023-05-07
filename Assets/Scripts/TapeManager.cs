@@ -62,7 +62,7 @@ public class TapeManager : MonoBehaviour
 
     private string[] ConvertSymbols(string input)
     {
-        List<string> convertedSymbols = new ();
+        List<string> convertedSymbols = new List<string>();
 
         int zeroAmount = 0;
         for (int i = 0; i < input.Length; i++)
