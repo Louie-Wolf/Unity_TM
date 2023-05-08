@@ -18,7 +18,7 @@ public class TuringMachineManger : MonoBehaviour
     private Animation tmhHeadAnim;
     #endregion
 
-    #region User Interface
+    #region User Interface References
     [Space(2)]
     [Header("UI")]
     [SerializeField]
@@ -43,10 +43,10 @@ public class TuringMachineManger : MonoBehaviour
     private TextMeshPro stateText;
     #endregion
 
-    #region Settings
+    #region User Settings
     [Space(2)]
     [Header("Settings")]
-    [Range(1f,5f)]
+    [Range(0.1f,5f)]
     [SerializeField]
     private float waitTime;
     [SerializeField]
@@ -55,7 +55,7 @@ public class TuringMachineManger : MonoBehaviour
     private float tmHeadSpeed = 2;
     #endregion
 
-    #region Turing Machine Vars
+    #region TM Variables
     private Dictionary<int, State> states;
     private State currentState;
     private State acceptedState;
@@ -101,7 +101,7 @@ public class TuringMachineManger : MonoBehaviour
     }
     #endregion
 
-    #region Method Behaviour
+    #region TM Behaviour
     private void InitEmptyStates()
     {
         states = new Dictionary<int, State>();
