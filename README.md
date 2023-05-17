@@ -30,5 +30,5 @@ DR : Right (00)
 (e.g)  
 1 001000100010100 <strong>11</strong> next transition  
 (q2, x3) -> (q3, x1, R)  
-Note: TM has to start with 1  
+Note: TM has to start with 1 and currently has to end with 1.
 <br>
